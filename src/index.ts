@@ -1,16 +1,16 @@
-import express, { Application } from 'express'
 import { config } from './config/index.config';
-import { middlwares } from './middlewares/index.middleware'; 
+import { handlers } from './handlers/index.handler'
 
-// Destructuring
-const { env } = config;
-const { log_middlware } = middlwares;
+const { log } = handlers
+const main = async () => {
+  await log();
+}
 
-const app: Application = express();
-
-app.use(express.json());
-app.use(log_middlware);
-
-app.listen(env.PORT || 3001, () => {
-  console.info(`App listening on port ${env.PORT || 3001}`);
-})
+main().then(() => {
+  console.log(`Awaiting message parsing on queues`);
+}).catch((err) => {
+  console.error(`Something crashed`, {
+    data: err,
+    message: 'error'
+  });
+});
